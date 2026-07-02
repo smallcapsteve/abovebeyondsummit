@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 560" role="img" aria-label="Above and Beyond Summit logo">
+  <defs>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#8f6f2a"/>
+      <stop offset="0.45" stop-color="#e8cf8f"/>
+      <stop offset="0.65" stop-color="#c9a24b"/>
+      <stop offset="1" stop-color="#8f6f2a"/>
+    </linearGradient>
+    <linearGradient id="goldV" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e8cf8f"/>
+      <stop offset="1" stop-color="#8f6f2a"/>
+    </linearGradient>
+  </defs>
+
+  <!-- A -->
+  <g fill="url(#gold)">
+    <polygon points="285,40 310,40 205,300 180,300"/>
+    <polygon points="285,40 310,40 330,90 305,90"/>
+  </g>
+
+  <!-- B -->
+  <g fill="none" stroke="url(#gold)" stroke-width="22">
+    <path d="M340 52 L340 288"/>
+    <path d="M340 60 C 445 60, 460 110, 400 160 C 480 170, 490 265, 355 278" stroke-linecap="round"/>
+  </g>
+
+  <!-- Mountains -->
+  <g>
+    <polygon points="150,300 235,185 275,240 305,205 355,300" fill="url(#goldV)"/>
+    <polygon points="235,185 275,240 258,262 300,300 150,300" fill="#8f6f2a" opacity="0.55"/>
+    <polygon points="305,205 355,300 415,300 350,225" fill="url(#goldV)"/>
+    <polygon points="350,225 305,205 330,255 360,240" fill="#f5ecd4" opacity="0.7"/>
+    <polygon points="235,185 255,212 240,228 262,246 275,240" fill="#f5ecd4" opacity="0.75"/>
+  </g>
+
+  <!-- ABOVE & BEYOND -->
+  <text x="320" y="392" text-anchor="middle" font-family="Cormorant Garamond, Georgia, serif" font-size="64" font-weight="600" letter-spacing="6" fill="#f5f0e6">ABOVE <tspan fill="url(#gold)">&amp;</tspan> BEYOND</text>
+
+  <!-- SUMMIT -->
+  <g>
+    <line x1="120" y1="446" x2="222" y2="446" stroke="url(#gold)" stroke-width="2"/>
+    <text x="320" y="460" text-anchor="middle" font-family="Jost, Segoe UI, sans-serif" font-size="38" letter-spacing="18" fill="#c9a24b">SUMMIT</text>
+    <line x1="428" y1="446" x2="530" y2="446" stroke="url(#gold)" stroke-width="2"/>
+  </g>
+
+  <!-- Tagline -->
+  <text x="320" y="516" text-anchor="middle" font-family="Jost, Segoe UI, sans-serif" font-size="20" letter-spacing="4" fill="#c9a24b">MINING&#160;&#160;|&#160;&#160;INVESTMENTS&#160;&#160;|&#160;&#160;OPPORTUNITIES</text>
+</svg>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Company Registration — Above &amp; Beyond Summit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<link rel="icon" type="image/svg+xml" href="assets/mark.svg">
+</head>
+<body>
+
+<nav>
+  <a class="brand" href="index.html">
+    <img src="assets/mark.svg" alt="Above &amp; Beyond Summit">
+    <span>ABOVE &amp; BEYOND</span>
+  </a>
+  <ul>
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="index.html#agenda">Agenda</a></li>
+    <li><a href="index.html#venue">Venue</a></li>
+    <li><a class="btn" href="register-investor.html">Investor Registration</a></li>
+  </ul>
+</nav>
+
+<main class="form-page">
+  <a class="back-link" href="index.html">&larr; Back to Summit Home</a>
+
+  <div class="page-heading">
+    <h1>Company <span class="gold-text">Registration</span></h1>
+    <p>November 21&ndash;24 &middot; The Scott Resort &amp; Spa &middot; Scottsdale, Arizona</p>
+  </div>
+
+  <form id="company-form" novalidate>
+
+    <fieldset>
+      <legend>Company Information</legend>
+      <div class="two-col">
+        <div class="field">
+          <label for="company-name">Company Name <span class="req">*</span></label>
+          <input type="text" id="company-name" name="companyName" required>
+        </div>
+        <div class="field">
+          <label for="symbol">Ticker Symbol <span class="req">*</span></label>
+          <input type="text" id="symbol" name="symbol" placeholder="e.g. TSXV: ABC" required>
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="field">
+          <label for="commodity">Commodity Focus <span class="req">*</span></label>
+          <input type="text" id="commodity" name="commodityFocus" placeholder="e.g. Gold, Copper" required>
+        </div>
+        <div class="field">
+          <label for="stage">Stage <span class="req">*</span></label>
+          <select id="stage" name="stage" required>
+            <option value="" disabled selected>Select stage&hellip;</option>
+            <option>Explorer</option>
+            <option>Developer</option>
+            <option>Producer</option>
+            <option>Project Generator</option>
+            <option>Royalty Co</option>
+            <option>Other</option>
+          </select>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Primary Contact</legend>
+      <div class="two-col">
+        <div class="field">
+          <label for="contact-name">Full Name <span class="req">*</span></label>
+          <input type="text" id="contact-name" name="contactName" required>
+        </div>
+        <div class="field">
+          <label for="contact-title">Title / Position</label>
+          <input type="text" id="contact-title" name="contactTitle">
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="field">
+          <label for="contact-email">Email <span class="req">*</span></label>
+          <input type="email" id="contact-email" name="contactEmail" required>
+        </div>
+        <div class="field">
+          <label for="contact-phone">Phone <span class="req">*</span></label>
+          <input type="tel" id="contact-phone" name="contactPhone" required>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Attendees</legend>
+      <div class="field">
+        <label>Names of Attendees</label>
+        <div id="attendee-list">
+          <div class="attendee-row">
+            <input type="text" name="attendeeName[]" placeholder="Full name" aria-label="Attendee name">
+            <input type="text" name="attendeeTitle[]" placeholder="Title (optional)" aria-label="Attendee title">
+            <button type="button" class="remove-btn" aria-label="Remove attendee" onclick="removeRow(this)">&times;</button>
+          </div>
+        </div>
+        <button type="button" class="add-btn" onclick="addAttendee()">+ Add Another Attendee</button>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Additional Details</legend>
+      <div class="field">
+        <label for="requests">Special Requests</label>
+        <textarea id="requests" name="specialRequests" placeholder="Dietary requirements, A/V needs, scheduling constraints, etc."></textarea>
+      </div>
+      <div class="field">
+        <label class="single-check">
+          <input type="checkbox" name="sponsorshipInterest" value="yes">
+          <span>We are interested in additional event sponsorship opportunities</span>
+        </label>
+      </div>
+    </fieldset>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-solid">Submit Registration</button>
+      <p class="form-note">Our team will follow up within two business days to confirm your registration.</p>
+    </div>
+  </form>
+
+  <div class="success-box" id="success">
+    <h2>Registration Received</h2>
+    <p>Thank you — we've received your company registration for the Above &amp; Beyond Summit.<br>Our team will be in touch shortly to confirm details and next steps.</p>
+    <p style="margin-top:2rem;"><a class="btn" href="index.html">Return to Summit Home</a></p>
+  </div>
+</main>
+
+<footer>
+  <p>Above &amp; Beyond Summit &mdash; Mining | Investments | Opportunities</p>
+  <p>November 21&ndash;24 &middot; The Scott Resort &amp; Spa &middot; Scottsdale, Arizona</p>
+</footer>
+
+<script>
+function addAttendee() {
+  const list = document.getElementById('attendee-list');
+  const row = document.createElement('div');
+  row.className = 'attendee-row';
+  row.innerHTML =
+    '<input type="text" name="attendeeName[]" placeholder="Full name" aria-label="Attendee name">' +
+    '<input type="text" name="attendeeTitle[]" placeholder="Title (optional)" aria-label="Attendee title">' +
+    '<button type="button" class="remove-btn" aria-label="Remove attendee" onclick="removeRow(this)">&times;</button>';
+  list.appendChild(row);
+}
+
+function removeRow(btn) {
+  const list = btn.closest('#attendee-list, #investor-attendee-list');
+  if (list.children.length > 1) btn.parentElement.remove();
+  else btn.parentElement.querySelectorAll('input').forEach(i => i.value = '');
+}
+
+document.getElementById('company-form').addEventListener('submit', function (e) {
+  e.preventDefault();
+  // MOCKUP: no backend yet. Validate required fields, then show confirmation.
+  let valid = true;
+  this.querySelectorAll('[required]').forEach(el => {
+    if (!el.value.trim()) { el.style.borderColor = '#a33'; valid = false; }
+    else el.style.borderColor = '';
+  });
+  if (!valid) return;
+  this.style.display = 'none';
+  document.getElementById('success').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+</script>
+
+</body>
+</html>
