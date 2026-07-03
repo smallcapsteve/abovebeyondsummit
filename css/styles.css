@@ -429,6 +429,9 @@ legend {
   border-bottom: 1px solid var(--border);
 }
 
+/* clear the floated legend so the first field row drops below it */
+legend + * { clear: both; }
+
 .field { margin-bottom: 1.4rem; }
 
 .field:last-child { margin-bottom: 0; }
