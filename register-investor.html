@@ -34,6 +34,7 @@
   </div>
 
   <form id="investor-form" novalidate>
+    <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off" aria-hidden="true">
 
     <fieldset>
       <legend>Your Information</legend>
@@ -142,18 +143,46 @@ function removeRow(btn) {
   else btn.parentElement.querySelectorAll('input').forEach(i => i.value = '');
 }
 
-document.getElementById('investor-form').addEventListener('submit', function (e) {
+// Registrations are emailed via FormSubmit (no third-party form dashboard; delivery only).
+const FORM_ENDPOINT = 'https://formsubmit.co/ajax/280e73bb9085bd72b4288c4b36536616';
+
+document.getElementById('investor-form').addEventListener('submit', async function (e) {
   e.preventDefault();
-  // MOCKUP: no backend yet. Validate required fields, then show confirmation.
   let valid = true;
   this.querySelectorAll('[required]').forEach(el => {
     if (!el.value.trim()) { el.style.borderColor = '#a33'; valid = false; }
     else el.style.borderColor = '';
   });
   if (!valid) return;
-  this.style.display = 'none';
-  document.getElementById('success').style.display = 'block';
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  const btn = this.querySelector('[type="submit"]');
+  const original = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Submitting…';
+
+  try {
+    const data = new FormData(this);
+    data.append('_subject', 'New Investor Registration — Above & Beyond Summit');
+    data.append('_template', 'table');
+    data.append('_captcha', 'false');
+    const emailField = this.querySelector('[name="email"]');
+    if (emailField && emailField.value) data.append('_replyto', emailField.value);
+
+    const res = await fetch(FORM_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Accept': 'application/json' },
+      body: data
+    });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+
+    this.style.display = 'none';
+    document.getElementById('success').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } catch (err) {
+    btn.disabled = false;
+    btn.textContent = original;
+    alert('Sorry — something went wrong sending your registration. Please try again in a moment.');
+  }
 });
 </script>
 
