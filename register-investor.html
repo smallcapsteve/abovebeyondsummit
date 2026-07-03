@@ -31,6 +31,8 @@
   <div class="page-heading">
     <h1>Investor <span class="gold-text">Registration</span></h1>
     <p>November 22&ndash;24 &middot; The Scott Resort &amp; Spa &middot; Scottsdale, Arizona</p>
+    <p style="color: var(--gold-light); letter-spacing: 0.12em; text-transform: uppercase; font-size: 0.8rem; margin-top: 1rem;">Investor spaces are limited</p>
+    <p style="max-width: 620px; margin: 0.9rem auto 0; color: var(--grey);">Reserve your place below. A member of our team will follow up personally with rates and next steps, and you'll receive a confirmation email shortly.</p>
   </div>
 
   <form id="investor-form" novalidate>
@@ -108,14 +110,14 @@
     </fieldset>
 
     <div class="form-actions">
-      <button type="submit" class="btn btn-solid">Submit Registration</button>
-      <p class="form-note">Our team will follow up within two business days to confirm your registration.</p>
+      <button type="submit" class="btn btn-solid">Reserve My Place</button>
+      <p class="form-note">Investor spaces are limited. A member of our team will follow up personally with rates and details, and you'll receive a confirmation email shortly.</p>
     </div>
   </form>
 
   <div class="success-box" id="success">
     <h2>Registration Received</h2>
-    <p>Thank you — we've received your investor registration for the Above &amp; Beyond Summit.<br>Our team will be in touch shortly with confirmation and event details.</p>
+    <p>Thank you — we've received your investor registration for the Above &amp; Beyond Summit.<br>Investor spaces are limited; a member of our team will reach out personally with rates and next steps to confirm your place.<br>A confirmation email is on its way, and a preferred summit rate of $150/night is available at The Scott.</p>
     <p style="margin-top:2rem;"><a class="btn" href="index.html">Return to Summit Home</a></p>
   </div>
 </main>
@@ -167,6 +169,7 @@ document.getElementById('investor-form').addEventListener('submit', async functi
     data.append('_captcha', 'false');
     const emailField = this.querySelector('[name="email"]');
     if (emailField && emailField.value) data.append('_replyto', emailField.value);
+    data.append('_autoresponse', "Thank you for registering for the Above & Beyond Summit (November 22–24, The Scott Resort & Spa, Scottsdale, Arizona). Investor spaces are limited — a member of our team will reach out personally with rates and next steps to confirm your place. A preferred summit room rate of $150/night is available at The Scott Resort & Spa. We look forward to seeing you in Scottsdale.\n\n— The Above & Beyond Summit Team, presented by theDeepDive.ca");
 
     const res = await fetch(FORM_ENDPOINT, {
       method: 'POST',

@@ -29,8 +29,10 @@
   <a class="back-link" href="index.html">&larr; Back to Summit Home</a>
 
   <div class="page-heading">
-    <h1>Company <span class="gold-text">Registration</span></h1>
+    <h1>Company <span class="gold-text">Application</span></h1>
     <p>November 22&ndash;24 &middot; The Scott Resort &amp; Spa &middot; Scottsdale, Arizona</p>
+    <p style="color: var(--gold-light); letter-spacing: 0.12em; text-transform: uppercase; font-size: 0.8rem; margin-top: 1rem;">Presenting spaces are limited</p>
+    <p style="max-width: 620px; margin: 0.9rem auto 0; color: var(--grey);">Complete the application below. Our team reviews each submission and follows up personally with availability, rates, and next steps.</p>
   </div>
 
   <form id="company-form" novalidate>
@@ -122,14 +124,14 @@
     </fieldset>
 
     <div class="form-actions">
-      <button type="submit" class="btn btn-solid">Submit Registration</button>
-      <p class="form-note">Our team will follow up within two business days to confirm your registration.</p>
+      <button type="submit" class="btn btn-solid">Submit Application</button>
+      <p class="form-note">Applications are reviewed on a rolling basis. A member of our team will follow up with availability and rates, and you'll receive a confirmation email shortly.</p>
     </div>
   </form>
 
   <div class="success-box" id="success">
-    <h2>Registration Received</h2>
-    <p>Thank you — we've received your company registration for the Above &amp; Beyond Summit.<br>Our team will be in touch shortly to confirm details and next steps.</p>
+    <h2>Application Received</h2>
+    <p>Thank you — we've received your company application for the Above &amp; Beyond Summit.<br>Presenting spaces are limited; our team reviews each application and will reach out personally with availability, rates, and next steps.<br>A confirmation email is on its way, and a preferred summit rate of $150/night is available at The Scott.</p>
     <p style="margin-top:2rem;"><a class="btn" href="index.html">Return to Summit Home</a></p>
   </div>
 </main>
@@ -176,11 +178,15 @@ document.getElementById('company-form').addEventListener('submit', async functio
 
   try {
     const data = new FormData(this);
-    data.append('_subject', 'New Company Registration — Above & Beyond Summit');
+    data.append('_subject', 'New Company Application — Above & Beyond Summit');
     data.append('_template', 'table');
     data.append('_captcha', 'false');
     const emailField = this.querySelector('[name="contactEmail"]');
-    if (emailField && emailField.value) data.append('_replyto', emailField.value);
+    if (emailField && emailField.value) {
+      data.append('_replyto', emailField.value);
+      data.append('email', emailField.value);
+    }
+    data.append('_autoresponse', "Thank you for applying to present at the Above & Beyond Summit (November 22–24, The Scott Resort & Spa, Scottsdale, Arizona). We've received your application. Presenting spaces are limited — a member of our team will review your submission and reach out personally with availability, rates, and next steps. A preferred summit room rate of $150/night is available at The Scott Resort & Spa.\n\n— The Above & Beyond Summit Team, presented by theDeepDive.ca");
 
     const res = await fetch(FORM_ENDPOINT, {
       method: 'POST',
