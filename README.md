@@ -1,7 +1,7 @@
 # Above & Beyond Summit — Website
 
 Static site for the Above & Beyond Mining Summit.
-**November 21–24 · The Scott Resort & Spa · Scottsdale, Arizona · Presented by The Deep Dive**
+**November 22–24 · The Scott Resort & Spa · Scottsdale, Arizona · Presented by The Deep Dive**
 
 ## Pages
 
