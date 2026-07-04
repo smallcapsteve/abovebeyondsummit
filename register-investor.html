@@ -145,9 +145,7 @@ function removeRow(btn) {
   else btn.parentElement.querySelectorAll('input').forEach(i => i.value = '');
 }
 
-// Registrations are emailed via FormSubmit (no third-party form dashboard; delivery only).
-const FORM_ENDPOINT = 'https://formsubmit.co/ajax/280e73bb9085bd72b4288c4b36536616';
-
+// Registrations post to our own backend (/api/register) — custom emails + CRM, no third-party form service.
 document.getElementById('investor-form').addEventListener('submit', async function (e) {
   e.preventDefault();
   let valid = true;
@@ -162,21 +160,35 @@ document.getElementById('investor-form').addEventListener('submit', async functi
   btn.disabled = true;
   btn.textContent = 'Submitting…';
 
-  try {
-    const data = new FormData(this);
-    data.append('_subject', 'New Investor Registration — Above & Beyond Summit');
-    data.append('_template', 'table');
-    data.append('_captcha', 'false');
-    const emailField = this.querySelector('[name="email"]');
-    if (emailField && emailField.value) data.append('_replyto', emailField.value);
-    data.append('_autoresponse', "Thank you for registering for the Above & Beyond Summit (November 22–24, The Scott Resort & Spa, Scottsdale, Arizona). Investor spaces are limited — a member of our team will reach out personally with rates and next steps to confirm your place. A preferred summit room rate of $150/night is available at The Scott Resort & Spa. We look forward to seeing you in Scottsdale.\n\n— The Above & Beyond Summit Team, presented by theDeepDive.ca");
+  const val = n => { const el = this.querySelector('[name="' + n + '"]'); return el ? el.value.trim() : ''; };
+  const guests = [];
+  this.querySelectorAll('.attendee-row').forEach(row => {
+    const gn = row.querySelector('[name="guestName[]"]');
+    const ge = row.querySelector('[name="guestEmail[]"]');
+    if (gn && gn.value.trim()) guests.push({ name: gn.value.trim(), email: ge ? ge.value.trim() : '' });
+  });
+  const commodities = Array.from(this.querySelectorAll('[name="commodities[]"]:checked')).map(c => c.value);
+  const payload = {
+    type: 'investor',
+    name: val('name'),
+    email: val('email'),
+    phone: val('phone'),
+    organization: val('organization'),
+    commodities: commodities,
+    guests: guests,
+    special_requests: val('specialRequests'),
+    extras: { golf: !!this.querySelector('[name="golf"]:checked') },
+    _honey: val('_honey')
+  };
 
-    const res = await fetch(FORM_ENDPOINT, {
+  try {
+    const res = await fetch('/api/register', {
       method: 'POST',
-      headers: { 'Accept': 'application/json' },
-      body: data
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
     });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok || !json.ok) throw new Error('failed');
 
     this.style.display = 'none';
     document.getElementById('success').style.display = 'block';

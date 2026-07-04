@@ -159,9 +159,7 @@ function removeRow(btn) {
   else btn.parentElement.querySelectorAll('input').forEach(i => i.value = '');
 }
 
-// Registrations are emailed via FormSubmit (no third-party form dashboard; delivery only).
-const FORM_ENDPOINT = 'https://formsubmit.co/ajax/280e73bb9085bd72b4288c4b36536616';
-
+// Applications post to our own backend (/api/register) — custom emails + CRM, no third-party form service.
 document.getElementById('company-form').addEventListener('submit', async function (e) {
   e.preventDefault();
   let valid = true;
@@ -176,24 +174,38 @@ document.getElementById('company-form').addEventListener('submit', async functio
   btn.disabled = true;
   btn.textContent = 'Submitting…';
 
-  try {
-    const data = new FormData(this);
-    data.append('_subject', 'New Company Application — Above & Beyond Summit');
-    data.append('_template', 'table');
-    data.append('_captcha', 'false');
-    const emailField = this.querySelector('[name="contactEmail"]');
-    if (emailField && emailField.value) {
-      data.append('_replyto', emailField.value);
-      data.append('email', emailField.value);
-    }
-    data.append('_autoresponse', "Thank you for applying to present at the Above & Beyond Summit (November 22–24, The Scott Resort & Spa, Scottsdale, Arizona). We've received your application. Presenting spaces are limited — a member of our team will review your submission and reach out personally with availability, rates, and next steps. A preferred summit room rate of $150/night is available at The Scott Resort & Spa.\n\n— The Above & Beyond Summit Team, presented by theDeepDive.ca");
+  const val = n => { const el = this.querySelector('[name="' + n + '"]'); return el ? el.value.trim() : ''; };
+  const attendees = [];
+  this.querySelectorAll('.attendee-row').forEach(row => {
+    const an = row.querySelector('[name="attendeeName[]"]');
+    const at = row.querySelector('[name="attendeeTitle[]"]');
+    if (an && an.value.trim()) attendees.push({ name: an.value.trim() + (at && at.value.trim() ? ' (' + at.value.trim() + ')' : '') });
+  });
+  const focus = val('commodityFocus');
+  const payload = {
+    type: 'company',
+    organization: val('companyName'),
+    name: val('contactName'),
+    title: val('contactTitle'),
+    email: val('contactEmail'),
+    phone: val('contactPhone'),
+    ticker: val('symbol'),
+    stage: val('stage'),
+    commodities: focus ? focus.split(',').map(s => s.trim()).filter(Boolean) : [],
+    guests: attendees,
+    special_requests: val('specialRequests'),
+    extras: { sponsorship_interest: !!this.querySelector('[name="sponsorshipInterest"]:checked') },
+    _honey: val('_honey')
+  };
 
-    const res = await fetch(FORM_ENDPOINT, {
+  try {
+    const res = await fetch('/api/register', {
       method: 'POST',
-      headers: { 'Accept': 'application/json' },
-      body: data
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
     });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok || !json.ok) throw new Error('failed');
 
     this.style.display = 'none';
     document.getElementById('success').style.display = 'block';
@@ -201,7 +213,7 @@ document.getElementById('company-form').addEventListener('submit', async functio
   } catch (err) {
     btn.disabled = false;
     btn.textContent = original;
-    alert('Sorry — something went wrong sending your registration. Please try again in a moment.');
+    alert('Sorry — something went wrong sending your application. Please try again in a moment.');
   }
 });
 </script>
