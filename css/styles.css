@@ -410,18 +410,27 @@ footer .presented-by { margin-top: 1.5rem; }
 
 fieldset {
   border: 1px solid var(--border);
+  border-radius: 12px;
   background: var(--card);
-  padding: 2rem;
+  padding: 1.75rem 2rem 2rem;
   margin-bottom: 2rem;
+  overflow: hidden;
 }
 
 legend {
+  float: left;
+  width: 100%;
   font-family: var(--serif);
   font-size: 1.25rem;
   color: var(--gold-light);
-  padding: 0 0.75rem;
   letter-spacing: 0.05em;
+  padding: 0 0 0.9rem;
+  margin-bottom: 1.4rem;
+  border-bottom: 1px solid var(--border);
 }
+
+/* clear the floated legend so the first field row drops below it */
+legend + * { clear: both; }
 
 .field { margin-bottom: 1.4rem; }
 
@@ -572,6 +581,91 @@ select { appearance: none; background-image: linear-gradient(45deg, transparent 
 }
 
 .back-link:hover { color: var(--gold); }
+
+/* ---------- Speakers ---------- */
+.speaker-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+  gap: 2rem;
+}
+
+.speaker-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 2.25rem 1.75rem;
+  text-align: center;
+  transition: border-color 0.25s, transform 0.25s;
+}
+
+.speaker-card:hover { border-color: var(--gold-dark); transform: translateY(-4px); }
+
+.speaker-card img {
+  width: 172px;
+  height: 172px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin: 0 auto 1.4rem;
+  border: 2px solid var(--gold-dark);
+}
+
+.speaker-card h3 {
+  font-family: var(--serif);
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.3rem;
+}
+
+.speaker-card .role {
+  color: var(--gold);
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+.speaker-card .bio { color: var(--grey); font-size: 0.92rem; }
+
+/* ---------- Gold sponsor ---------- */
+.sponsors .sponsor-card {
+  background: var(--card);
+  border: 1px solid var(--gold-dark);
+  padding: 3rem 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.sponsors .sponsor-card img { max-height: 84px; width: auto; max-width: 100%; }
+
+/* ---------- Company list ---------- */
+.notice {
+  border: 1px solid var(--gold-dark);
+  background: rgba(201, 162, 75, 0.06);
+  padding: 1.1rem 1.5rem;
+  color: var(--grey);
+  text-align: center;
+  font-size: 0.9rem;
+  margin-bottom: 2.5rem;
+}
+
+.company-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+.company-item {
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 1.15rem 1.3rem;
+  text-align: center;
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
+  transition: border-color 0.2s;
+}
+
+.company-item:hover { border-color: var(--gold-dark); }
 
 @media (max-width: 760px) {
   nav ul { display: none; }

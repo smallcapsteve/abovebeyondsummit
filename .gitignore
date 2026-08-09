@@ -12,3 +12,7 @@ Icon?
 
 # Logs
 *.log
+
+# Backend secrets & data (live only on the droplet)
+backend/config.json
+backend/registrations.jsonl
