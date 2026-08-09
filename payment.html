@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Delegate Pass Payment — Above &amp; Beyond Summit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css?v=4">
+<link rel="icon" type="image/svg+xml" href="assets/mark.svg">
+</head>
+<body>
+
+<nav>
+  <a class="brand" href="index.html">
+    <img src="assets/mark.svg" alt="Above &amp; Beyond Summit">
+    <span>ABOVE &amp; BEYOND</span>
+  </a>
+  <ul>
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="index.html#speakers">Speakers</a></li>
+    <li><a href="index.html#venue">Venue</a></li>
+    <li><a href="companies.html">Companies</a></li>
+    <li><a class="btn" href="register-investor.html">Attend</a></li>
+  </ul>
+</nav>
+
+<main class="form-page">
+  <a class="back-link" href="index.html">&larr; Back to Summit Home</a>
+
+  <div class="page-heading">
+    <h1>Delegate Pass <span class="gold-text">Payment</span></h1>
+    <p>November 22&ndash;24 &middot; Andaz Scottsdale Resort &middot; Scottsdale, Arizona</p>
+  </div>
+
+  <fieldset>
+    <legend>Secure Your Pass</legend>
+    <p style="color: var(--grey); margin-bottom: 1.5rem;">The delegate pass is <strong style="color: var(--gold-light);">US$750</strong> per attendee and includes all sessions, one-on-one meetings, receptions, and dinners. Payment is processed securely by Stripe &mdash; have a promo code? You can enter it on the payment page.</p>
+    <div class="two-col">
+      <div class="field">
+        <label for="pay-email">Email (for your receipt)</label>
+        <input type="email" id="pay-email" name="email" placeholder="you@example.com">
+      </div>
+      <div class="field">
+        <label for="pay-qty">Number of Passes</label>
+        <select id="pay-qty">
+          <option value="1" selected>1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-actions" style="margin-top: 1.5rem;">
+      <button type="button" class="btn btn-solid" id="pay-btn" onclick="startCheckout()">Proceed to Secure Checkout</button>
+      <p class="form-note" id="pay-error" style="color: #d66; display: none;"></p>
+      <p class="form-note">You'll be redirected to Stripe to complete payment.</p>
+    </div>
+  </fieldset>
+
+  <p style="text-align:center; color: var(--grey); font-size: 0.9rem;">Not registered yet? Please <a href="register-investor.html">request to attend</a> first &mdash; passes are confirmed by our team.</p>
+</main>
+
+<footer>
+  <p>Above &amp; Beyond Summit &mdash; Mining | Investments | Opportunities</p>
+  <p>November 22&ndash;24 &middot; Andaz Scottsdale Resort &middot; Scottsdale, Arizona</p>
+</footer>
+
+<script>
+async function startCheckout() {
+  const btn = document.getElementById('pay-btn');
+  const err = document.getElementById('pay-error');
+  btn.disabled = true; btn.textContent = 'Redirecting…'; err.style.display = 'none';
+  try {
+    const r = await fetch('/api/checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        quantity: document.getElementById('pay-qty').value,
+        email: document.getElementById('pay-email').value.trim() || undefined
+      })
+    });
+    const d = await r.json();
+    if (d.url) { window.location = d.url; return; }
+    throw new Error(d.error || 'Unexpected response');
+  } catch (e) {
+    err.textContent = e.message || 'Could not start checkout. Please try again.';
+    err.style.display = 'block';
+    btn.disabled = false; btn.textContent = 'Proceed to Secure Checkout';
+  }
+}
+</script>
+
+</body>
+</html>
