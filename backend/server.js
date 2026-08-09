@@ -60,7 +60,7 @@ function confirmHtml(d, co) {
   const opening = co ? 'Thank you for your application to present at' : 'Thank you for your interest in';
   const body = co
     ? "We've received your application. Presenting spaces are limited and allocated by review — a member of our team will be in touch personally to discuss availability, fees, and next steps. Submitting this registers your interest; your place will be confirmed once our team follows up with you."
-    : "We've received your details. Spaces are limited, so a member of our team will be in touch personally to discuss availability, fees, and the next steps to secure a place. Submitting this registers your interest to attend; your spot will be confirmed once our team follows up with you.";
+    : "We've received your registration. If you haven't completed payment for your delegate pass (US$750 per attendee), you can do so securely at <a href=\"https://abovebeyondsummit.com/payment.html\">abovebeyondsummit.com/payment.html</a> — your registration is complete once payment is processed. Registrations are subject to review; if we're unable to accommodate you, your payment will be refunded in full.";
   return shell(
     '<p style="font-size:16px;margin:0 0 16px;">' + (name ? 'Hi ' + name + ',' : 'Hello,') + '</p>' +
     '<p style="font-size:15px;line-height:1.6;margin:0 0 16px;">' + opening + ' the <strong>Above &amp; Beyond Summit</strong>. ' + body + '</p>' +

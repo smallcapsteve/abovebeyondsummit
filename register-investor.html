@@ -34,7 +34,7 @@
     <h1>Investor <span class="gold-text">Registration</span></h1>
     <p>November 22&ndash;24 &middot; Andaz Scottsdale Resort &middot; Scottsdale, Arizona</p>
     <p style="color: var(--gold-light); letter-spacing: 0.12em; text-transform: uppercase; font-size: 0.8rem; margin-top: 1rem;">Investor spaces are limited</p>
-    <p style="max-width: 620px; margin: 0.9rem auto 0; color: var(--grey);">Register your interest below. Spaces are limited — a member of our team will follow up personally to discuss availability, fees, and next steps.</p>
+    <p style="max-width: 620px; margin: 0.9rem auto 0; color: var(--grey);">Register below and secure your delegate pass — <strong style="color: var(--gold-light);">US$750 per attendee</strong>. After submitting you'll be taken to our secure checkout to complete payment.</p>
   </div>
 
   <form id="investor-form" novalidate>
@@ -112,15 +112,15 @@
     </fieldset>
 
     <div class="form-actions">
-      <button type="submit" class="btn btn-solid">Request to Attend</button>
-      <p class="form-note">Investor spaces are limited. Submitting this registers your interest — a member of our team will be in touch to discuss availability, fees, and confirm a place. It does not guarantee a spot.</p>
+      <button type="submit" class="btn btn-solid">Register &amp; Continue to Payment</button>
+      <p class="form-note">US$750 per attendee, processed securely by Stripe — promo codes can be entered at checkout. Registrations are subject to review; if we're unable to accommodate you, your payment will be refunded in full.</p>
     </div>
   </form>
 
   <div class="success-box" id="success">
-    <h2>Request Received</h2>
-    <p>Thank you — we've received your details.<br>Spaces are limited, so a member of our team will be in touch personally to discuss availability, fees, and the next steps to secure a place. This registers your interest to attend; your spot will be confirmed once our team follows up.<br>We've emailed you a copy, and a preferred summit rate of $249/night (including resort fee, plus applicable taxes) is available at the Andaz.</p>
-    <p style="margin-top:2rem;"><a class="btn" href="index.html">Return to Summit Home</a></p>
+    <h2>Registration Received — One Step Left</h2>
+    <p>Thank you — we've received your details and emailed you a copy.<br>To complete your registration, please pay for your delegate pass using the secure checkout below.<br>A preferred summit rate of $249/night (including resort fee, plus applicable taxes) is available at the Andaz.</p>
+    <p style="margin-top:2rem;"><a class="btn btn-solid" href="payment.html">Complete Payment</a></p>
   </div>
 </main>
 
@@ -191,6 +191,18 @@ document.getElementById('investor-form').addEventListener('submit', async functi
     });
     const json = await res.json().catch(() => ({}));
     if (!res.ok || !json.ok) throw new Error('failed');
+
+    // Registration saved — now send them to Stripe checkout (1 pass per attendee).
+    btn.textContent = 'Redirecting to secure payment…';
+    try {
+      const payRes = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ quantity: 1 + guests.length, email: payload.email })
+      });
+      const pay = await payRes.json().catch(() => ({}));
+      if (pay.url) { window.location = pay.url; return; }
+    } catch (payErr) { /* fall through to manual payment link */ }
 
     this.style.display = 'none';
     document.getElementById('success').style.display = 'block';
