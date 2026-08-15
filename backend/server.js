@@ -64,7 +64,7 @@ function confirmHtml(d, co) {
   return shell(
     '<p style="font-size:16px;margin:0 0 16px;">' + (name ? 'Hi ' + name + ',' : 'Hello,') + '</p>' +
     '<p style="font-size:15px;line-height:1.6;margin:0 0 16px;">' + opening + ' the <strong>Above &amp; Beyond Summit</strong>. ' + body + '</p>' +
-    '<div style="background:#faf6ec;border-left:3px solid ' + GOLD + ';padding:14px 16px;margin:20px 0;font-size:14px;"><strong>Preferred hotel rate:</strong> $249/night (including resort fee, plus applicable taxes) at Andaz Scottsdale Resort, reserved for our delegates.</div>' +
+    '<div style="background:#faf6ec;border-left:3px solid ' + GOLD + ';padding:14px 16px;margin:20px 0;font-size:14px;"><strong>Preferred hotel rate:</strong> $249/night (including resort fee, plus applicable taxes) at Andaz Scottsdale Resort, reserved for our delegates. <a href="https://www.hyatt.com/events/en-US/group-booking/PHXAZ/G-ABOV" style="color:' + GOLD + ';">Book your room here</a>.</div>' +
     '<p style="font-size:15px;line-height:1.6;margin:0 0 4px;">We look forward to connecting with you.</p><p style="font-size:15px;margin:0;">— The Above &amp; Beyond Summit Team</p>'
   );
 }
