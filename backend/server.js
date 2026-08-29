@@ -112,16 +112,93 @@ async function handleCheckout(d, res) {
   }
 }
 
+// ---- David Morgan VIP Dinner: $295, hard cap of 12 seats ----
+// Sold count comes from Stripe itself (paid checkout sessions tagged dmvip),
+// so restarts/redeploys can't lose track. Small race window if two people
+// pay at the same instant — worst case refund the 13th manually.
+const VIP_PRICE = 'price_1U9pSyK5aG5XdzTWJLCpDDSb';
+const VIP_LIMIT = 12;
+
+function stripeGet(path) {
+  return new Promise((resolve, reject) => {
+    const req2 = https.request({
+      method: 'GET', hostname: 'api.stripe.com', port: 443, path: path,
+      headers: { 'Authorization': 'Basic ' + Buffer.from(cfg.stripeKey + ':').toString('base64') }
+    }, (r) => { let b = ''; r.on('data', d => b += d); r.on('end', () => resolve(JSON.parse(b))); });
+    req2.on('error', reject);
+    req2.setTimeout(15000, () => req2.destroy(new Error('timeout')));
+    req2.end();
+  });
+}
+
+async function vipSold() {
+  let sold = 0, starting_after = '', pages = 0;
+  while (pages++ < 5) {
+    const q = '/v1/checkout/sessions?limit=100' + (starting_after ? '&starting_after=' + starting_after : '');
+    const page = await stripeGet(q);
+    if (!page.data) break;
+    for (const s of page.data) {
+      if (s.metadata && s.metadata.dmvip === '1' && s.payment_status === 'paid') sold += parseInt(s.metadata.qty || '1', 10);
+    }
+    if (!page.has_more) break;
+    starting_after = page.data[page.data.length - 1].id;
+  }
+  return sold;
+}
+
+async function handleVipStatus(res) {
+  try {
+    const sold = await vipSold();
+    res.writeHead(200); return res.end(JSON.stringify({ sold: sold, limit: VIP_LIMIT, remaining: Math.max(0, VIP_LIMIT - sold) }));
+  } catch (e) {
+    console.error('vipStatusErr', e);
+    res.writeHead(502); return res.end(JSON.stringify({ error: 'Could not check availability.' }));
+  }
+}
+
+async function handleVipCheckout(d, res) {
+  try {
+    const sold = await vipSold();
+    const remaining = VIP_LIMIT - sold;
+    if (remaining <= 0) { res.writeHead(409); return res.end(JSON.stringify({ error: 'Sold out — all 12 VIP dinner seats are taken.' })); }
+    const qty = Math.max(1, Math.min(remaining, Math.min(4, parseInt(d.quantity, 10) || 1)));
+    const site = cfg.siteUrl || 'https://abovebeyondsummit.com';
+    const fields = {
+      'mode': 'payment',
+      'line_items[0][price]': cfg.vipPrice || VIP_PRICE,
+      'line_items[0][quantity]': String(qty),
+      'automatic_tax[enabled]': cfg.stripeTax ? 'true' : 'false',
+      'metadata[dmvip]': '1',
+      'metadata[qty]': String(qty),
+      'expires_at': String(Math.floor(Date.now() / 1000) + 1800),
+      'success_url': site + '/payment-success.html?session_id={CHECKOUT_SESSION_ID}',
+      'cancel_url': site + '/vip-dinner.html'
+    };
+    if (d.email) fields['customer_email'] = String(d.email).slice(0, 200);
+    const r = await formPost('https://api.stripe.com/v1/checkout/sessions',
+      { 'Authorization': 'Basic ' + Buffer.from(cfg.stripeKey + ':').toString('base64') }, fields);
+    const s = JSON.parse(r.body);
+    if (r.status >= 200 && r.status < 300 && s.url) { res.writeHead(200); return res.end(JSON.stringify({ url: s.url, remaining: remaining })); }
+    console.error('vipStripe', r.status, r.body.slice(0, 500));
+    res.writeHead(502); return res.end(JSON.stringify({ error: 'Could not start checkout. Please try again or contact us.' }));
+  } catch (e) {
+    console.error('vipErr', e);
+    res.writeHead(502); return res.end(JSON.stringify({ error: 'Could not start checkout. Please try again or contact us.' }));
+  }
+}
+
 http.createServer((req, res) => {
   res.setHeader('Content-Type', 'application/json');
-  const isRegister = req.url.startsWith('/api/register'), isCheckout = req.url.startsWith('/api/checkout');
-  if (req.method !== 'POST' || (!isRegister && !isCheckout)) { res.writeHead(404); return res.end(JSON.stringify({ error: 'Not found' })); }
+  if (req.method === 'GET' && req.url.startsWith('/api/vip-status')) return handleVipStatus(res);
+  const isRegister = req.url.startsWith('/api/register'), isCheckout = req.url.startsWith('/api/checkout'), isVip = req.url.startsWith('/api/vip-checkout');
+  if (req.method !== 'POST' || (!isRegister && !isCheckout && !isVip)) { res.writeHead(404); return res.end(JSON.stringify({ error: 'Not found' })); }
   let body = '';
   req.on('data', c => { body += c; if (body.length > 512000) req.destroy(); });
   req.on('end', async () => {
     let d;
     try { d = JSON.parse(body || '{}'); } catch { res.writeHead(400); return res.end(JSON.stringify({ error: 'Bad JSON' })); }
     if (isCheckout) return handleCheckout(d, res);
+    if (isVip) return handleVipCheckout(d, res);
     if (d._honey) { res.writeHead(200); return res.end(JSON.stringify({ ok: true })); }
     if (!d.type || (!d.email && !d.organization)) { res.writeHead(400); return res.end(JSON.stringify({ error: 'Missing required fields' })); }
     delete d._honey;

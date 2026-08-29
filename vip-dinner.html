@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VIP Dinner with David Morgan — Above &amp; Beyond Summit</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css?v=4">
+<link rel="icon" type="image/svg+xml" href="assets/mark.svg">
+</head>
+<body>
+
+<nav>
+  <a class="brand" href="index.html">
+    <img src="assets/mark.svg" alt="Above &amp; Beyond Summit">
+    <span>ABOVE &amp; BEYOND</span>
+  </a>
+  <ul>
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="index.html#speakers">Speakers</a></li>
+    <li><a href="index.html#venue">Venue</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+</nav>
+
+<main class="form-page">
+
+  <div class="page-heading" style="margin-top: 1rem;">
+    <span class="kicker" style="font-size:0.75rem; letter-spacing:0.4em; text-transform:uppercase; color:var(--gold); display:block; margin-bottom:0.75rem;">By Invitation Only</span>
+    <h1>VIP Dinner with <span class="gold-text">David Morgan</span></h1>
+    <p>November 22&ndash;24 &middot; Andaz Scottsdale Resort &middot; Scottsdale, Arizona</p>
+  </div>
+
+  <div style="display:flex; justify-content:center; margin-bottom: 2.5rem;">
+    <img src="assets/speaker-david-morgan.jpg" alt="David Morgan" style="width:150px; height:150px; border-radius:50%; border:2px solid var(--gold-dark); object-fit:cover;">
+  </div>
+
+  <fieldset>
+    <legend>An Evening with the Silver Guru</legend>
+    <p style="color: var(--grey); margin-bottom: 1.25rem;">Join David Morgan — precious metals analyst, author, and publisher of The Morgan Report — for an intimate private dinner during the summit. Share a table, ask your questions, and talk markets face to face.</p>
+    <p style="color: var(--gold-light); margin-bottom: 1.5rem;"><strong>US$295 per seat &middot; strictly limited to 12 guests</strong></p>
+    <p id="seats-line" style="color: var(--grey); margin-bottom: 1.5rem; letter-spacing: 0.05em;">Checking availability&hellip;</p>
+    <div class="two-col">
+      <div class="field">
+        <label for="vip-email">Email (for your receipt)</label>
+        <input type="email" id="vip-email" placeholder="you@example.com">
+      </div>
+      <div class="field">
+        <label for="vip-qty">Seats</label>
+        <select id="vip-qty">
+          <option value="1" selected>1</option>
+          <option value="2">2</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-actions" style="margin-top: 1.5rem;">
+      <button type="button" class="btn btn-solid" id="vip-btn" onclick="startVipCheckout()">Reserve My Seat — $295</button>
+      <p class="form-note" id="vip-error" style="color: #d66; display: none;"></p>
+      <p class="form-note">Payment is processed securely by Stripe. Seats are confirmed on payment, first come, first served.</p>
+    </div>
+  </fieldset>
+
+  <p style="text-align:center; color: var(--grey); font-size: 0.9rem;">The dinner is in addition to your summit delegate pass. Not registered yet? <a href="register-investor.html">Register here</a> — your invitation email includes a promo code for the pass.</p>
+</main>
+
+<footer>
+  <p>Above &amp; Beyond Summit &mdash; Mining | Investments | Opportunities</p>
+  <p>November 22&ndash;24 &middot; Andaz Scottsdale Resort &middot; Scottsdale, Arizona</p>
+  <p><a href="mailto:info@abovebeyondsummit.com">info@abovebeyondsummit.com</a> &middot; <a href="tel:+15205760155">1 (520) 576-0155</a></p>
+</footer>
+
+<script>
+async function loadSeats() {
+  const line = document.getElementById('seats-line');
+  const btn = document.getElementById('vip-btn');
+  try {
+    const r = await fetch('/api/vip-status');
+    const d = await r.json();
+    if (typeof d.remaining === 'number') {
+      if (d.remaining <= 0) {
+        line.textContent = 'SOLD OUT — all 12 seats are taken.';
+        line.style.color = '#d66';
+        btn.disabled = true;
+        btn.textContent = 'Sold Out';
+      } else {
+        line.textContent = d.remaining + ' of ' + d.limit + ' seats remaining';
+        line.style.color = 'var(--gold-light)';
+      }
+    } else { line.textContent = ''; }
+  } catch (e) { line.textContent = ''; }
+}
+loadSeats();
+
+async function startVipCheckout() {
+  const btn = document.getElementById('vip-btn');
+  const err = document.getElementById('vip-error');
+  btn.disabled = true; btn.textContent = 'Redirecting…'; err.style.display = 'none';
+  try {
+    const r = await fetch('/api/vip-checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        quantity: document.getElementById('vip-qty').value,
+        email: document.getElementById('vip-email').value.trim() || undefined
+      })
+    });
+    const d = await r.json();
+    if (d.url) { window.location = d.url; return; }
+    throw new Error(d.error || 'Unexpected response');
+  } catch (e) {
+    err.textContent = e.message || 'Could not start checkout. Please try again.';
+    err.style.display = 'block';
+    btn.disabled = false; btn.textContent = 'Reserve My Seat — $295';
+    loadSeats();
+  }
+}
+</script>
+
+</body>
+</html>
