@@ -118,6 +118,7 @@ async function handleCheckout(d, res) {
 // pay at the same instant — worst case refund the 13th manually.
 const VIP_PRICE = 'price_1U9pSyK5aG5XdzTWJLCpDDSb';
 const VIP_LIMIT = 12;
+const VIP_PROMO = 'promo_1U9pSxK5aG5XdzTWhA2LgiZ6'; // DM500 — $500 off, auto-applied
 
 function stripeGet(path) {
   return new Promise((resolve, reject) => {
@@ -161,15 +162,18 @@ async function handleVipCheckout(d, res) {
     const sold = await vipSold();
     const remaining = VIP_LIMIT - sold;
     if (remaining <= 0) { res.writeHead(409); return res.end(JSON.stringify({ error: 'Sold out — all 12 VIP dinner seats are taken.' })); }
-    const qty = Math.max(1, Math.min(remaining, Math.min(4, parseInt(d.quantity, 10) || 1)));
+    // One guest per checkout: $750 pass + $295 dinner − $500 DM500 = $545.
     const site = cfg.siteUrl || 'https://abovebeyondsummit.com';
     const fields = {
       'mode': 'payment',
-      'line_items[0][price]': cfg.vipPrice || VIP_PRICE,
-      'line_items[0][quantity]': String(qty),
+      'line_items[0][price]': cfg.stripePrice || STRIPE_PRICE,
+      'line_items[0][quantity]': '1',
+      'line_items[1][price]': cfg.vipPrice || VIP_PRICE,
+      'line_items[1][quantity]': '1',
+      'discounts[0][promotion_code]': cfg.vipPromo || VIP_PROMO,
       'automatic_tax[enabled]': cfg.stripeTax ? 'true' : 'false',
       'metadata[dmvip]': '1',
-      'metadata[qty]': String(qty),
+      'metadata[qty]': '1',
       'expires_at': String(Math.floor(Date.now() / 1000) + 1800),
       'success_url': site + '/payment-success.html?session_id={CHECKOUT_SESSION_ID}',
       'cancel_url': site + '/vip-dinner.html'
