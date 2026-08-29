@@ -42,26 +42,89 @@
     <legend>An Evening with the Silver Guru</legend>
     <p style="color: var(--grey); margin-bottom: 1.5rem;">Join David Morgan — precious metals analyst, author, and publisher of The Morgan Report — for an intimate private dinner during the summit. Your reservation includes the full summit delegate pass, with your invitation discount already applied.</p>
 
-    <div style="background: var(--black); border: 1px solid var(--border); padding: 1.5rem 1.75rem; margin-bottom: 1.5rem;">
+    <div style="background: var(--black); border: 1px solid var(--border); padding: 1.5rem 1.75rem; margin-bottom: 1rem;">
       <div style="display:flex; justify-content:space-between; padding: 0.4rem 0; color: var(--ivory);"><span>Summit Delegate Pass</span><span>$750</span></div>
       <div style="display:flex; justify-content:space-between; padding: 0.4rem 0; color: var(--gold-light);"><span>Invitation Discount (DM500)</span><span>&minus;$500</span></div>
       <div style="display:flex; justify-content:space-between; padding: 0.4rem 0; color: var(--ivory); border-bottom: 1px solid var(--border); padding-bottom: 0.9rem;"><span>VIP Dinner with David Morgan</span><span>$295</span></div>
       <div style="display:flex; justify-content:space-between; padding-top: 0.9rem; font-size: 1.15rem; color: var(--gold-light);"><strong>Total</strong><strong>US$545</strong></div>
     </div>
 
-    <p id="seats-line" style="color: var(--grey); margin-bottom: 1.5rem; letter-spacing: 0.05em;">Checking availability&hellip;</p>
-    <div class="field">
-      <label for="vip-email">Email (for your receipt)</label>
-      <input type="email" id="vip-email" placeholder="you@example.com">
-    </div>
-    <div class="form-actions" style="margin-top: 1.5rem;">
-      <button type="button" class="btn btn-solid" id="vip-btn" onclick="startVipCheckout()">Register &amp; Reserve My Seat — $545</button>
-      <p class="form-note" id="vip-error" style="color: #d66; display: none;"></p>
-      <p class="form-note">One guest per checkout &middot; strictly limited to 12 dinner seats &middot; confirmed on payment, first come, first served. Payment is processed securely by Stripe; the discount is applied automatically.</p>
-    </div>
+    <p id="seats-line" style="color: var(--grey); letter-spacing: 0.05em;">Checking availability&hellip;</p>
   </fieldset>
 
-  <p style="text-align:center; color: var(--grey); font-size: 0.9rem;">Already purchased your summit pass? Contact us at <a href="mailto:info@abovebeyondsummit.com">info@abovebeyondsummit.com</a> and we'll arrange your dinner seat separately.</p>
+  <form id="vip-form" novalidate>
+    <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+    <fieldset>
+      <legend>Your Information</legend>
+      <div class="two-col">
+        <div class="field">
+          <label for="vip-name">Full Name <span class="req">*</span></label>
+          <input type="text" id="vip-name" name="name" required>
+        </div>
+        <div class="field">
+          <label for="vip-org">Firm / Organization</label>
+          <input type="text" id="vip-org" name="organization">
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="field">
+          <label for="vip-email">Email <span class="req">*</span></label>
+          <input type="email" id="vip-email" name="email" required>
+        </div>
+        <div class="field">
+          <label for="vip-phone">Phone <span class="req">*</span></label>
+          <input type="tel" id="vip-phone" name="phone" required>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Commodities of Interest</legend>
+      <div class="check-grid">
+        <label class="check-item"><input type="checkbox" name="commodities[]" value="Gold"> Gold</label>
+        <label class="check-item"><input type="checkbox" name="commodities[]" value="Silver"> Silver</label>
+        <label class="check-item"><input type="checkbox" name="commodities[]" value="Copper"> Copper</label>
+        <label class="check-item"><input type="checkbox" name="commodities[]" value="Lithium"> Lithium</label>
+        <label class="check-item"><input type="checkbox" name="commodities[]" value="Iron"> Iron</label>
+        <label class="check-item"><input type="checkbox" name="commodities[]" value="Rare Earths"> Rare Earths</label>
+        <label class="check-item"><input type="checkbox" name="commodities[]" value="Antimony"> Antimony</label>
+        <label class="check-item"><input type="checkbox" name="commodities[]" value="Tungsten"> Tungsten</label>
+        <label class="check-item"><input type="checkbox" name="commodities[]" value="Nickel"> Nickel</label>
+        <label class="check-item"><input type="checkbox" name="commodities[]" value="Uranium"> Uranium</label>
+        <label class="check-item"><input type="checkbox" name="commodities[]" value="Zinc"> Zinc</label>
+        <label class="check-item"><input type="checkbox" name="commodities[]" value="Other"> Other</label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Extras</legend>
+      <div class="field">
+        <label class="single-check">
+          <input type="checkbox" name="golf" value="yes">
+          <span>I'm interested in the golf tournament (Sunday, November 22)</span>
+        </label>
+      </div>
+      <div class="field">
+        <label for="vip-requests">Dietary Requirements &amp; Special Requests</label>
+        <textarea id="vip-requests" name="specialRequests" placeholder="Dietary requirements for the dinner, accessibility needs, companies you'd like to meet, etc."></textarea>
+      </div>
+    </fieldset>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-solid" id="vip-btn">Register &amp; Continue to Payment — $545</button>
+      <p class="form-note" id="vip-error" style="color: #d66; display: none;"></p>
+      <p class="form-note">One guest per checkout &middot; strictly limited to 12 dinner seats &middot; seats are held only on completed payment, first come, first served. Payment is processed securely by Stripe; your invitation discount is applied automatically.</p>
+    </div>
+  </form>
+
+  <div class="success-box" id="vip-success">
+    <h2>Registration Received — One Step Left</h2>
+    <p>We've received your details, but your dinner seat is <strong>not reserved until payment is complete</strong>.<br>Please use the button below to finish checkout.</p>
+    <p style="margin-top:2rem;"><a class="btn btn-solid" href="#" id="vip-retry" onclick="startVipCheckout(); return false;">Complete Payment — $545</a></p>
+  </div>
+
+  <p style="text-align:center; color: var(--grey); font-size: 0.9rem; margin-top: 2rem;">Already purchased your summit pass? Contact us at <a href="mailto:info@abovebeyondsummit.com">info@abovebeyondsummit.com</a> and we'll arrange your dinner seat separately.</p>
 </main>
 
 <footer>
@@ -93,27 +156,70 @@ async function loadSeats() {
 loadSeats();
 
 async function startVipCheckout() {
-  const btn = document.getElementById('vip-btn');
   const err = document.getElementById('vip-error');
-  btn.disabled = true; btn.textContent = 'Redirecting…'; err.style.display = 'none';
   try {
     const r = await fetch('/api/vip-checkout', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        email: document.getElementById('vip-email').value.trim() || undefined
-      })
+      body: JSON.stringify({ email: (document.getElementById('vip-email').value || '').trim() || undefined })
     });
     const d = await r.json();
     if (d.url) { window.location = d.url; return; }
     throw new Error(d.error || 'Unexpected response');
   } catch (e) {
-    err.textContent = e.message || 'Could not start checkout. Please try again.';
-    err.style.display = 'block';
-    btn.disabled = false; btn.textContent = 'Register & Reserve My Seat — $545';
+    alert(e.message || 'Could not start checkout. Please try again.');
     loadSeats();
   }
 }
+
+document.getElementById('vip-form').addEventListener('submit', async function (e) {
+  e.preventDefault();
+  let valid = true;
+  this.querySelectorAll('[required]').forEach(el => {
+    if (!el.value.trim()) { el.style.borderColor = '#a33'; valid = false; }
+    else el.style.borderColor = '';
+  });
+  if (!valid) return;
+
+  const btn = document.getElementById('vip-btn');
+  const err = document.getElementById('vip-error');
+  btn.disabled = true; btn.textContent = 'Submitting…'; err.style.display = 'none';
+
+  const val = n => { const el = this.querySelector('[name="' + n + '"]'); return el ? el.value.trim() : ''; };
+  const commodities = Array.from(this.querySelectorAll('[name="commodities[]"]:checked')).map(c => c.value);
+  const payload = {
+    type: 'investor',
+    name: val('name'),
+    email: val('email'),
+    phone: val('phone'),
+    organization: val('organization'),
+    commodities: commodities,
+    special_requests: val('specialRequests'),
+    extras: { golf: !!this.querySelector('[name="golf"]:checked'), dm_vip_dinner: true },
+    source: 'abovebeyondsummit.com/vip-dinner',
+    _honey: val('_honey')
+  };
+
+  try {
+    const res = await fetch('/api/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok || !json.ok) throw new Error('failed');
+
+    btn.textContent = 'Redirecting to secure payment…';
+    this.style.display = 'none';
+    document.getElementById('vip-success').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    startVipCheckout();
+  } catch (e2) {
+    btn.disabled = false; btn.textContent = 'Register & Continue to Payment — $545';
+    err.textContent = 'Sorry — something went wrong sending your registration. Please try again in a moment.';
+    err.style.display = 'block';
+  }
+});
 </script>
 
 </body>
