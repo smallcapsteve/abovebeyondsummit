@@ -83,9 +83,15 @@ function sendEmail(to, subject, html, replyTo) {
 // Promo codes (SUMMIT250/500/750) are entered on the Stripe-hosted page.
 // Flip cfg.stripeTax to true in config.json once AZ tax registration is done.
 const STRIPE_PRICE = 'price_1U2bXSK5aG5XdzTWLTBJszHJ';
+// Partner pages may pre-apply one of these promo codes (server-side allowlist;
+// the client only sends the code name, never the Stripe id).
+const AUTO_PROMOS = {
+  'VM500': 'promo_1UBM67K5aG5XdzTWNXujN2lD' // VRIC Media / Jay Martin — $500 off, exp Oct 1
+};
 async function handleCheckout(d, res) {
   const qty = Math.max(1, Math.min(20, parseInt(d.quantity, 10) || 1));
   const site = cfg.siteUrl || 'https://abovebeyondsummit.com';
+  const autoPromo = d.promo && AUTO_PROMOS[String(d.promo)];
   const fields = {
     'mode': 'payment',
     'line_items[0][price]': cfg.stripePrice || STRIPE_PRICE,
@@ -93,11 +99,13 @@ async function handleCheckout(d, res) {
     'line_items[0][adjustable_quantity][enabled]': 'true',
     'line_items[0][adjustable_quantity][minimum]': '1',
     'line_items[0][adjustable_quantity][maximum]': '20',
-    'allow_promotion_codes': 'true',
     'automatic_tax[enabled]': cfg.stripeTax ? 'true' : 'false',
     'success_url': site + '/payment-success.html?session_id={CHECKOUT_SESSION_ID}',
-    'cancel_url': site + '/payment.html'
+    'cancel_url': site + (autoPromo ? '/register-vric.html' : '/payment.html')
   };
+  // Stripe forbids combining a pre-applied discount with the promo-code box.
+  if (autoPromo) fields['discounts[0][promotion_code]'] = autoPromo;
+  else fields['allow_promotion_codes'] = 'true';
   if (d.email) fields['customer_email'] = String(d.email).slice(0, 200);
   try {
     const r = await formPost('https://api.stripe.com/v1/checkout/sessions',

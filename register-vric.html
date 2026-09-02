@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VRIC Media Registration — Above &amp; Beyond Summit</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css?v=4">
+<link rel="icon" type="image/svg+xml" href="assets/mark.svg">
+</head>
+<body>
+
+<nav>
+  <a class="brand" href="index.html">
+    <img src="assets/mark.svg" alt="Above &amp; Beyond Summit">
+    <span>ABOVE &amp; BEYOND</span>
+  </a>
+  <ul>
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="index.html#speakers">Speakers</a></li>
+    <li><a href="index.html#venue">Venue</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+</nav>
+
+<main class="form-page">
+
+  <div class="page-heading" style="margin-top: 1rem;">
+    <span class="kicker" style="font-size:0.75rem; letter-spacing:0.4em; text-transform:uppercase; color:var(--gold); display:block; margin-bottom:0.75rem;">A VRIC Media Invitation</span>
+    <h1>Investor <span class="gold-text">Registration</span></h1>
+    <p>November 22&ndash;24 &middot; Andaz Scottsdale Resort &middot; Scottsdale, Arizona</p>
+    <p style="max-width: 620px; margin: 0.9rem auto 0; color: var(--grey);">Welcome, VRIC Media community — your <strong style="color: var(--gold-light);">$500 discount (VM500)</strong> is applied automatically at checkout. <strong style="color: var(--gold-light);">US$250</strong> for your delegate pass instead of $750.</p>
+  </div>
+
+  <form id="investor-form" novalidate>
+    <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+    <fieldset>
+      <legend>Your Information</legend>
+      <div class="two-col">
+        <div class="field">
+          <label for="inv-name">Full Name <span class="req">*</span></label>
+          <input type="text" id="inv-name" name="name" required>
+        </div>
+        <div class="field">
+          <label for="inv-org">Firm / Organization</label>
+          <input type="text" id="inv-org" name="organization">
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="field">
+          <label for="inv-email">Email <span class="req">*</span></label>
+          <input type="email" id="inv-email" name="email" required>
+        </div>
+        <div class="field">
+          <label for="inv-phone">Phone <span class="req">*</span></label>
+          <input type="tel" id="inv-phone" name="phone" required>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Additional Attendees</legend>
+      <div class="field">
+        <label>Guests attending with you (optional — additional passes are $750 each; the $500 discount applies once per checkout)</label>
+        <div id="investor-attendee-list">
+          <div class="attendee-row">
+            <input type="text" name="guestName[]" placeholder="Full name" aria-label="Guest name">
+            <input type="email" name="guestEmail[]" placeholder="Email (optional)" aria-label="Guest email">
+            <button type="button" class="remove-btn" aria-label="Remove guest" onclick="removeRow(this)">&times;</button>
+          </div>
+        </div>
+        <button type="button" class="add-btn" onclick="addGuest()">+ Add Another Attendee</button>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Commodities of Interest</legend>
+      <div class="check-grid">
+        <label class="check-item"><input type="checkbox" name="commodities[]" value="Gold"> Gold</label>
+        <label class="check-item"><input type="checkbox" name="commodities[]" value="Silver"> Silver</label>
+        <label class="check-item"><input type="checkbox" name="commodities[]" value="Copper"> Copper</label>
+        <label class="check-item"><input type="checkbox" name="commodities[]" value="Lithium"> Lithium</label>
+        <label class="check-item"><input type="checkbox" name="commodities[]" value="Iron"> Iron</label>
+        <label class="check-item"><input type="checkbox" name="commodities[]" value="Rare Earths"> Rare Earths</label>
+        <label class="check-item"><input type="checkbox" name="commodities[]" value="Antimony"> Antimony</label>
+        <label class="check-item"><input type="checkbox" name="commodities[]" value="Tungsten"> Tungsten</label>
+        <label class="check-item"><input type="checkbox" name="commodities[]" value="Nickel"> Nickel</label>
+        <label class="check-item"><input type="checkbox" name="commodities[]" value="Uranium"> Uranium</label>
+        <label class="check-item"><input type="checkbox" name="commodities[]" value="Zinc"> Zinc</label>
+        <label class="check-item"><input type="checkbox" name="commodities[]" value="Other"> Other</label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Extras</legend>
+      <div class="field">
+        <label class="single-check">
+          <input type="checkbox" name="golf" value="yes">
+          <span>I'm interested in the golf tournament (Sunday, November 22)</span>
+        </label>
+      </div>
+      <div class="field">
+        <label for="inv-requests">Special Requests</label>
+        <textarea id="inv-requests" name="specialRequests" placeholder="Dietary requirements, accessibility needs, companies you'd like to meet, etc."></textarea>
+      </div>
+    </fieldset>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-solid">Register &amp; Continue to Payment — $250</button>
+      <p class="form-note">Your VM500 discount is applied automatically — no code to enter. Payment is processed securely by Stripe. Registrations are subject to review; if we're unable to accommodate you, your payment will be refunded in full.</p>
+    </div>
+  </form>
+
+  <div class="success-box" id="success">
+    <h2>Registration Received — One Step Left</h2>
+    <p>We've received your details, but your registration is complete only once payment is processed.<br>Please use the button below to finish checkout — your $500 discount is already applied.</p>
+    <p style="margin-top:2rem;"><a class="btn btn-solid" href="#" onclick="startVricCheckout(); return false;">Complete Payment</a></p>
+  </div>
+</main>
+
+<footer>
+  <p>Above &amp; Beyond Summit &mdash; Mining | Investments | Opportunities</p>
+  <p>November 22&ndash;24 &middot; Andaz Scottsdale Resort &middot; Scottsdale, Arizona</p>
+  <p><a href="mailto:info@abovebeyondsummit.com">info@abovebeyondsummit.com</a> &middot; <a href="tel:+15205760155">1 (520) 576-0155</a></p>
+</footer>
+
+<script>
+function addGuest() {
+  const list = document.getElementById('investor-attendee-list');
+  const row = document.createElement('div');
+  row.className = 'attendee-row';
+  row.innerHTML =
+    '<input type="text" name="guestName[]" placeholder="Full name" aria-label="Guest name">' +
+    '<input type="email" name="guestEmail[]" placeholder="Email (optional)" aria-label="Guest email">' +
+    '<button type="button" class="remove-btn" aria-label="Remove guest" onclick="removeRow(this)">&times;</button>';
+  list.appendChild(row);
+}
+
+function removeRow(btn) {
+  const list = btn.closest('#investor-attendee-list');
+  if (list.children.length > 1) btn.parentElement.remove();
+  else btn.parentElement.querySelectorAll('input').forEach(i => i.value = '');
+}
+
+let lastGuests = 0;
+async function startVricCheckout() {
+  try {
+    const r = await fetch('/api/checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        quantity: 1 + lastGuests,
+        promo: 'VM500',
+        email: (document.getElementById('inv-email').value || '').trim() || undefined
+      })
+    });
+    const d = await r.json();
+    if (d.url) { window.location = d.url; return; }
+    throw new Error(d.error || 'Unexpected response');
+  } catch (e) {
+    alert(e.message || 'Could not start checkout. Please try again.');
+  }
+}
+
+document.getElementById('investor-form').addEventListener('submit', async function (e) {
+  e.preventDefault();
+  let valid = true;
+  this.querySelectorAll('[required]').forEach(el => {
+    if (!el.value.trim()) { el.style.borderColor = '#a33'; valid = false; }
+    else el.style.borderColor = '';
+  });
+  if (!valid) return;
+
+  const btn = this.querySelector('[type="submit"]');
+  btn.disabled = true;
+  btn.textContent = 'Submitting…';
+
+  const val = n => { const el = this.querySelector('[name="' + n + '"]'); return el ? el.value.trim() : ''; };
+  const guests = [];
+  this.querySelectorAll('.attendee-row').forEach(row => {
+    const gn = row.querySelector('[name="guestName[]"]');
+    const ge = row.querySelector('[name="guestEmail[]"]');
+    if (gn && gn.value.trim()) guests.push({ name: gn.value.trim(), email: ge ? ge.value.trim() : '' });
+  });
+  lastGuests = guests.length;
+  const commodities = Array.from(this.querySelectorAll('[name="commodities[]"]:checked')).map(c => c.value);
+  const payload = {
+    type: 'investor',
+    name: val('name'),
+    email: val('email'),
+    phone: val('phone'),
+    organization: val('organization'),
+    commodities: commodities,
+    guests: guests,
+    special_requests: val('specialRequests'),
+    extras: { golf: !!this.querySelector('[name="golf"]:checked'), vric_invite: true },
+    source: 'abovebeyondsummit.com/register-vric',
+    _honey: val('_honey')
+  };
+
+  try {
+    const res = await fetch('/api/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok || !json.ok) throw new Error('failed');
+
+    btn.textContent = 'Redirecting to secure payment…';
+    this.style.display = 'none';
+    document.getElementById('success').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    startVricCheckout();
+  } catch (err) {
+    btn.disabled = false;
+    btn.textContent = 'Register & Continue to Payment — $250';
+    alert('Sorry — something went wrong sending your registration. Please try again in a moment.');
+  }
+});
+</script>
+
+</body>
+</html>
