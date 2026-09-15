@@ -86,7 +86,7 @@ const STRIPE_PRICE = 'price_1U2bXSK5aG5XdzTWLTBJszHJ';
 // Partner pages may pre-apply one of these promo codes (server-side allowlist;
 // the client only sends the code name, never the Stripe id).
 const AUTO_PROMOS = {
-  'VM500': 'promo_1UBM67K5aG5XdzTWNXujN2lD' // VRIC Media / Jay Martin — $500 off, exp Oct 1
+  'VM500': 'promo_1UFzTSK5aG5XdzTWabwi2d7O' // VRIC Media / Jay Martin — $500 off, exp Oct 31
 };
 async function handleCheckout(d, res) {
   const qty = Math.max(1, Math.min(20, parseInt(d.quantity, 10) || 1));
