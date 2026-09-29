@@ -7,6 +7,42 @@ const http = require('http'), https = require('https'), fs = require('fs'), path
 const DIR = __dirname;
 const cfg = JSON.parse(fs.readFileSync(path.join(DIR, 'config.json'), 'utf8'));
 const LOG = path.join(DIR, 'registrations.jsonl');
+const SPAM_LOG = path.join(DIR, 'spam.jsonl');
+
+// ---- Spam defenses ----
+// 1) Content: URLs/link-bait don't belong in a person's name, phone, or firm.
+const URLISH = /(https?:\/\/|www\.|\.ru\b|\.xyz\b|t\.me\/|bit\.ly)/i;
+function looksLikeSpam(d) {
+  const idFields = [d.name, d.organization, d.phone, d.title].map(v => String(v || ''));
+  if (idFields.some(v => URLISH.test(v))) return 'url-in-identity-field';
+  if (idFields.some(v => v.length > 120)) return 'oversized-field';
+  const all = idFields.join(' ') + ' ' + String(d.special_requests || '');
+  if (/(bonus|casino|bahis|freespin|deneme bonusu)/i.test(all)) return 'spam-keyword';
+  const eName = String(d.name || '');
+  if ((eName.match(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu) || []).length > 0) return 'emoji-in-name';
+  return null;
+}
+// 2) Rate limit: max 3 registrations per IP per 10 minutes (in-memory).
+const ipHits = new Map();
+function rateLimited(ip) {
+  if (!ip) return false;
+  const now = Date.now(), windowMs = 10 * 60 * 1000;
+  const hits = (ipHits.get(ip) || []).filter(t => now - t < windowMs);
+  hits.push(now);
+  ipHits.set(ip, hits);
+  if (ipHits.size > 5000) ipHits.clear(); // crude memory guard
+  return hits.length > 3;
+}
+// 3) Turnstile verification (enabled once cfg.turnstileSecret is set).
+async function turnstileOk(token, ip) {
+  if (!cfg.turnstileSecret) return true; // not configured yet — skip
+  if (!token) return false;
+  try {
+    const r = await formPost('https://challenges.cloudflare.com/turnstile/v0/siteverify', {},
+      { secret: cfg.turnstileSecret, response: String(token), remoteip: ip || '' });
+    return !!JSON.parse(r.body).success;
+  } catch (e) { console.error('turnstileErr', e); return true; } // fail open on CF outage
+}
 
 function post(urlStr, headers, bodyObj) {
   return new Promise((resolve, reject) => {
@@ -211,7 +247,16 @@ http.createServer((req, res) => {
     try { d = JSON.parse(body || '{}'); } catch { res.writeHead(400); return res.end(JSON.stringify({ error: 'Bad JSON' })); }
     if (isCheckout) return handleCheckout(d, res);
     if (isVip) return handleVipCheckout(d, res);
-    if (d._honey) { res.writeHead(200); return res.end(JSON.stringify({ ok: true })); }
+    const ip = req.headers['cf-connecting-ip'] || String(req.headers['x-forwarded-for'] || '').split(',')[0].trim();
+    const spamReason = d._honey ? 'honeypot' : (rateLimited(ip) ? 'rate-limit' : looksLikeSpam(d));
+    if (spamReason) {
+      try { fs.appendFileSync(SPAM_LOG, JSON.stringify({ reason: spamReason, ip: ip, at: new Date().toISOString(), d: d }) + '\n'); } catch (e) {}
+      res.writeHead(200); return res.end(JSON.stringify({ ok: true })); // silent drop — don't teach the bot
+    }
+    if (!(await turnstileOk(d._ts_token, ip))) {
+      res.writeHead(400); return res.end(JSON.stringify({ error: 'Verification failed — please refresh the page and try again.' }));
+    }
+    delete d._ts_token;
     if (!d.type || (!d.email && !d.organization)) { res.writeHead(400); return res.end(JSON.stringify({ error: 'Missing required fields' })); }
     delete d._honey;
     d.conference_id = cfg.conferenceId;
