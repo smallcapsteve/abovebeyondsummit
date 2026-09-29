@@ -10,6 +10,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/styles.css?v=4">
 <link rel="icon" type="image/svg+xml" href="assets/mark.svg">
+<script src="https://challenges.cloudflare.com/turnstile/api.js" async defer></script>
 </head>
 <body>
 
@@ -111,7 +112,8 @@
       </div>
     </fieldset>
 
-    <div class="form-actions">
+        <div class="cf-turnstile" data-sitekey="0x4AAAAAAFJJYuaUFH5GUW_Q" data-theme="dark" style="margin-bottom: 1.2rem;"></div>
+<div class="form-actions">
       <button type="submit" class="btn btn-solid" id="vip-btn">Register &amp; Continue to Payment — $545</button>
       <p class="form-note" id="vip-error" style="color: #d66; display: none;"></p>
       <p class="form-note">One guest per checkout &middot; strictly limited to 12 dinner seats &middot; seats are held only on completed payment, first come, first served. Payment is processed securely by Stripe; your invitation discount is applied automatically.</p>
@@ -197,7 +199,8 @@ document.getElementById('vip-form').addEventListener('submit', async function (e
     special_requests: val('specialRequests'),
     extras: { golf: !!this.querySelector('[name="golf"]:checked'), dm_vip_dinner: true },
     source: 'abovebeyondsummit.com/vip-dinner',
-    _honey: val('_honey')
+    _honey: val('_honey'),
+    _ts_token: (document.querySelector('[name="cf-turnstile-response"]') || {}).value
   };
 
   try {

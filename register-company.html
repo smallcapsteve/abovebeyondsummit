@@ -9,6 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/styles.css?v=3">
 <link rel="icon" type="image/svg+xml" href="assets/mark.svg">
+<script src="https://challenges.cloudflare.com/turnstile/api.js" async defer></script>
 </head>
 <body>
 
@@ -126,7 +127,8 @@
       </div>
     </fieldset>
 
-    <div class="form-actions">
+        <div class="cf-turnstile" data-sitekey="0x4AAAAAAFJJYuaUFH5GUW_Q" data-theme="dark" style="margin-bottom: 1.2rem;"></div>
+<div class="form-actions">
       <button type="submit" class="btn btn-solid">Submit Application</button>
       <p class="form-note">Applications are reviewed on a rolling basis. Submitting this registers your interest — a member of our team will be in touch to discuss availability, fees, and confirm a place. It does not guarantee a spot.</p>
     </div>
@@ -199,7 +201,8 @@ document.getElementById('company-form').addEventListener('submit', async functio
     guests: attendees,
     special_requests: val('specialRequests'),
     extras: { sponsorship_interest: !!this.querySelector('[name="sponsorshipInterest"]:checked') },
-    _honey: val('_honey')
+    _honey: val('_honey'),
+    _ts_token: (document.querySelector('[name="cf-turnstile-response"]') || {}).value
   };
 
   try {

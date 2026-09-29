@@ -10,6 +10,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/styles.css?v=4">
 <link rel="icon" type="image/svg+xml" href="assets/mark.svg">
+<script src="https://challenges.cloudflare.com/turnstile/api.js" async defer></script>
 </head>
 <body>
 
@@ -109,7 +110,8 @@
       </div>
     </fieldset>
 
-    <div class="form-actions">
+        <div class="cf-turnstile" data-sitekey="0x4AAAAAAFJJYuaUFH5GUW_Q" data-theme="dark" style="margin-bottom: 1.2rem;"></div>
+<div class="form-actions">
       <button type="submit" class="btn btn-solid">Register &amp; Continue to Payment — $250</button>
       <p class="form-note">Your VM500 discount is applied automatically — no code to enter. Payment is processed securely by Stripe. Registrations are subject to review; if we're unable to accommodate you, your payment will be refunded in full.</p>
     </div>
@@ -199,7 +201,8 @@ document.getElementById('investor-form').addEventListener('submit', async functi
     special_requests: val('specialRequests'),
     extras: { golf: !!this.querySelector('[name="golf"]:checked'), vric_invite: true },
     source: 'abovebeyondsummit.com/register-vric',
-    _honey: val('_honey')
+    _honey: val('_honey'),
+    _ts_token: (document.querySelector('[name="cf-turnstile-response"]') || {}).value
   };
 
   try {
