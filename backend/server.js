@@ -122,8 +122,10 @@ const STRIPE_PRICE = 'price_1U2bXSK5aG5XdzTWLTBJszHJ';
 // Partner pages may pre-apply one of these promo codes (server-side allowlist;
 // the client only sends the code name, never the Stripe id).
 const AUTO_PROMOS = {
-  'VM500': 'promo_1UFzTSK5aG5XdzTWabwi2d7O' // VRIC Media / Jay Martin — $500 off, exp Oct 31
+  'VM500': 'promo_1UFzTSK5aG5XdzTWabwi2d7O', // VRIC Media / Jay Martin — $500 off, exp Oct 31
+  'AZ400': 'promo_1UTVfbK5aG5XdzTWJUsDFaco'  // Scottsdale locals IG campaign — $400 off, exp Nov 1
 };
+const PROMO_CANCEL = { 'VM500': '/register-vric.html', 'AZ400': '/localspecial/' };
 async function handleCheckout(d, res) {
   const qty = Math.max(1, Math.min(20, parseInt(d.quantity, 10) || 1));
   const site = cfg.siteUrl || 'https://abovebeyondsummit.com';
@@ -137,7 +139,7 @@ async function handleCheckout(d, res) {
     'line_items[0][adjustable_quantity][maximum]': '20',
     'automatic_tax[enabled]': cfg.stripeTax ? 'true' : 'false',
     'success_url': site + '/payment-success.html?session_id={CHECKOUT_SESSION_ID}',
-    'cancel_url': site + (autoPromo ? '/register-vric.html' : '/payment.html')
+    'cancel_url': site + (autoPromo ? (PROMO_CANCEL[String(d.promo)] || '/payment.html') : '/payment.html')
   };
   // Stripe forbids combining a pre-applied discount with the promo-code box.
   if (autoPromo) fields['discounts[0][promotion_code]'] = autoPromo;
