@@ -652,13 +652,14 @@ select { appearance: none; background-image: linear-gradient(45deg, transparent 
   background: #fff;
   border: 1px solid #a8adb3;
   padding: 1.5rem;
-  min-height: 130px;
+  height: 130px;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.silver-card img { max-height: 70px; width: auto; max-width: 100%; }
+/* Same box for every logo, about half the Zang logo (573 x 84) */
+.silver-card img { width: 260px; max-width: 100%; height: 60px; object-fit: contain; }
 
 @media (max-width: 720px) { .silver-grid { grid-template-columns: 1fr; } }
 
