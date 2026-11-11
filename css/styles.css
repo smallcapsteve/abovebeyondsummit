@@ -638,6 +638,30 @@ select { appearance: none; background-image: linear-gradient(45deg, transparent 
 
 .sponsors .sponsor-card img { max-height: 84px; width: auto; max-width: 100%; }
 
+/* ---------- Silver sponsors ---------- */
+.sponsors-silver .section-heading { margin-bottom: 1.75rem; }
+.sponsors-silver .kicker { color: #c0c4c8; }
+
+.silver-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+
+.silver-card {
+  background: #fff;
+  border: 1px solid #a8adb3;
+  padding: 1.5rem;
+  min-height: 130px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.silver-card img { max-height: 70px; width: auto; max-width: 100%; }
+
+@media (max-width: 720px) { .silver-grid { grid-template-columns: 1fr; } }
+
 /* ---------- Company list ---------- */
 .notice {
   border: 1px solid var(--gold-dark);
