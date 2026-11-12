@@ -626,7 +626,15 @@ select { appearance: none; background-image: linear-gradient(45deg, transparent 
 
 .speaker-card .bio { color: var(--grey); font-size: 0.92rem; }
 
-/* ---------- Gold sponsor ---------- */
+/* ---------- Gold sponsors ---------- */
+.gold-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+}
+
+@media (max-width: 720px) { .gold-grid { grid-template-columns: 1fr; } }
+
 .sponsors .sponsor-card {
   background: var(--card);
   border: 1px solid var(--gold-dark);
@@ -636,7 +644,8 @@ select { appearance: none; background-image: linear-gradient(45deg, transparent 
   align-items: center;
 }
 
-.sponsors .sponsor-card img { max-height: 84px; width: auto; max-width: 100%; }
+/* Same box for each gold logo so both carry equal weight */
+.sponsors .sponsor-card img { width: 440px; max-width: 100%; height: 70px; object-fit: contain; }
 
 /* ---------- Silver sponsors ---------- */
 .sponsors-silver .section-heading { margin-bottom: 1.75rem; }
@@ -658,8 +667,8 @@ select { appearance: none; background-image: linear-gradient(45deg, transparent 
   align-items: center;
 }
 
-/* Same box for every logo, about half the Zang logo (573 x 84) */
-.silver-card img { width: 260px; max-width: 100%; height: 60px; object-fit: contain; }
+/* Same box for every logo, about half the gold logo box (440 x 70) */
+.silver-card img { width: 220px; max-width: 100%; height: 48px; object-fit: contain; }
 
 @media (max-width: 720px) { .silver-grid { grid-template-columns: 1fr; } }
 
